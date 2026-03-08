@@ -508,28 +508,61 @@ body.has-custom-cursor button { cursor: none; }
 
 /* --- Detail cards --- */
 .flow-detail-list {
-  display: grid;
-  grid-template-areas: "stack";
-  /* all cards overlap */
+  position: sticky;
+  top: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 640px;
+  perspective: 1600px;
+  perspective-origin: 50% 45%;
 }
+/* Blue smokey haze behind cards */
+.flow-detail-list::before {
+  content: '';
+  position: absolute;
+  inset: -80px;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.18) 0%, rgba(59,130,246,0.10) 30%, transparent 65%),
+    radial-gradient(ellipse at 30% 60%, rgba(96,165,250,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 40%, rgba(30,64,175,0.14) 0%, transparent 50%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+  animation: hazeBreath 6s ease-in-out infinite alternate;
+}
+@keyframes hazeBreath {
+  0%   { opacity: 0.7; transform: scale(0.95); }
+  100% { opacity: 1;   transform: scale(1.05); }
+}
+
+/* 3D carousel wrapper */
+.flow-cards-carousel {
+  position: relative;
+  width: 340px;
+  height: 580px;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .flow-detail-card {
-  grid-area: stack;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  opacity: 0;
-  transform: translateY(16px) scale(0.98);
-  pointer-events: none;
-  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+  backface-visibility: visible;
 }
-.flow-detail-card.is-active {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
+/* Each card is placed at 120° intervals, pushed outward */
+.flow-detail-card--0 { transform: rotateY(0deg)   translateZ(260px); }
+.flow-detail-card--1 { transform: rotateY(120deg) translateZ(260px); }
+.flow-detail-card--2 { transform: rotateY(240deg) translateZ(260px); }
+
 .flow-detail-card__cover {
-  height: 240px;
+  height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -537,7 +570,7 @@ body.has-custom-cursor button { cursor: none; }
   overflow: hidden;
 }
 .flow-detail-card__icon-large {
-  font-size: 4.5rem;
+  font-size: 5.5rem;
   filter: drop-shadow(0 8px 32px rgba(0,0,0,0.5));
 }
 .flow-detail-card__meta { padding: 2.25rem; }
@@ -928,15 +961,28 @@ body.has-custom-cursor button { cursor: none; }
   .flow-visual { padding: 6rem 1.5rem; }
   .flow-visual__layout { grid-template-columns: 1fr; }
   .flow-visual__animation { display: none; }
-  .flow-detail-card {
-    /* stack becomes normal flow on mobile */
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
+  .flow-detail-list {
     position: relative;
+    top: auto;
+    height: auto;
+    perspective: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .flow-detail-list::before { display: none; }
+  .flow-cards-carousel {
+    display: contents;
+  }
+  .flow-detail-card {
+    position: relative;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+    transform: none !important;
+    pointer-events: auto;
     margin-bottom: 1.5rem;
   }
-  .flow-detail-list { display: flex; flex-direction: column; }
+  .flow-detail-card__cover { height: 200px; }
   .flow-stage-dots { display: none; }
 
   .pricing-section { padding: 6rem 1.5rem; }

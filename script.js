@@ -380,14 +380,18 @@ function initScrollReveal() {
   if (!boxes.length || !cards.length) return;
 
   const ctx = canvas.getContext('2d');
+  const carousel = document.getElementById('flow-carousel');
   let activeStage = 0;
+  let lineProgress = 0;
+  let targetLineProgress = 0;
+  let lineAnimating = false;
 
   function syncCanvas() {
     canvas.width  = animContainer.offsetWidth;
     canvas.height = animContainer.offsetHeight;
     canvas.style.width  = animContainer.offsetWidth  + 'px';
     canvas.style.height = animContainer.offsetHeight + 'px';
-    drawLine(activeStage / Math.max(boxes.length - 1, 1));
+    drawLine(lineProgress);
   }
 
   function getBoxCentres() {
@@ -470,20 +474,52 @@ function initScrollReveal() {
   }
 
   function setActiveStage(stage) {
+    if (stage === activeStage) return;
     activeStage = stage;
     boxes.forEach((b, i) => b.classList.toggle('is-active', i === stage));
-    cards.forEach((c, i) => c.classList.toggle('is-active', i === stage));
     dots.forEach((d, i)  => d.classList.toggle('is-active', i === stage));
-    drawLine(stage / Math.max(boxes.length - 1, 1));
+
+    // Revolve the 3D carousel
+    if (carousel) {
+      carousel.style.transform = 'rotateY(' + (-120 * stage) + 'deg)';
+    }
+
+    // Animate the line progress (slow fuse)
+    targetLineProgress = stage / Math.max(boxes.length - 1, 1);
+    if (!lineAnimating) animateLine();
   }
 
-  // Activate on scroll via IntersectionObserver
-  boxes.forEach((box, i) => {
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) setActiveStage(i); });
-    }, { threshold: 0.6, rootMargin: '-15% 0px -15% 0px' });
-    obs.observe(box);
-  });
+  function animateLine() {
+    lineAnimating = true;
+    const diff = targetLineProgress - lineProgress;
+    if (Math.abs(diff) < 0.002) {
+      lineProgress = targetLineProgress;
+      drawLine(lineProgress);
+      lineAnimating = false;
+      return;
+    }
+    lineProgress += diff * 0.035; // slow lerp — "slow fuse"
+    drawLine(lineProgress);
+    requestAnimationFrame(animateLine);
+  }
+
+  // Scroll-based stage detection — whichever box is closest to viewport center
+  function updateStageFromScroll() {
+    const viewCenter = window.innerHeight * 0.45;
+    let closest = 0;
+    let closestDist = Infinity;
+    boxes.forEach((box, i) => {
+      const rect = box.getBoundingClientRect();
+      const boxCenter = rect.top + rect.height / 2;
+      const dist = Math.abs(boxCenter - viewCenter);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closest = i;
+      }
+    });
+    if (closest !== activeStage) setActiveStage(closest);
+  }
+  window.addEventListener('scroll', updateStageFromScroll, { passive: true });
 
   // Dot + box click
   dots.forEach((dot, i) => {
@@ -498,9 +534,11 @@ function initScrollReveal() {
   const resizeObs = new ResizeObserver(syncCanvas);
   resizeObs.observe(animContainer);
   window.addEventListener('resize', syncCanvas, { passive: true });
-  window.addEventListener('scroll', () => drawLine(activeStage / Math.max(boxes.length - 1, 1)), { passive: true });
+  window.addEventListener('scroll', () => drawLine(lineProgress), { passive: true });
 
-  requestAnimationFrame(() => { syncCanvas(); setActiveStage(0); });
+  // Initialize carousel at stage 0
+  if (carousel) carousel.style.transform = 'rotateY(0deg)';
+  requestAnimationFrame(() => { syncCanvas(); activeStage = -1; setActiveStage(0); });
 })();
 
 
