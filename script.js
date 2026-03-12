@@ -169,9 +169,9 @@ function initIntroScreen() {
         const gR     = maxR * gProg * 0.75;
         const gGrad  = ctx.createRadialGradient(cx, cy, 0, cx, cy, gR);
         gGrad.addColorStop(0,    `rgba(255, 255, 255, ${gProg * 1.0})`);
-        gGrad.addColorStop(0.08, `rgba(224, 242, 254, ${gProg * 0.95})`);
-        gGrad.addColorStop(0.2,  `rgba(147, 197, 253, ${gProg * 0.75})`); // blue-300
-        gGrad.addColorStop(0.5,  `rgba(59,  130, 246, ${gProg * 0.45})`); // blue-500
+        gGrad.addColorStop(0.08, `rgba(207, 250, 254, ${gProg * 0.95})`);
+        gGrad.addColorStop(0.2,  `rgba(153, 240, 255, ${gProg * 0.75})`); // blue-300
+        gGrad.addColorStop(0.5,  `rgba(0,  217, 255, ${gProg * 0.45})`); // blue-500
         gGrad.addColorStop(1,    'rgba(0, 0, 0, 0)');
         ctx.fillStyle = gGrad;
         ctx.fillRect(0, 0, warpCanvas.width, warpCanvas.height);
@@ -214,9 +214,9 @@ function initIntroScreen() {
 }
 
 /* =====================================================
-   2. CUSTOM CURSOR + CANVAS TRACER
+   2. CUSTOM CURSOR + CANVAS TRACER (disabled)
    ===================================================== */
-(function initCursorAndTracer() {
+/* (function initCursorAndTracer() {
   const cursorEl    = document.getElementById('custom-cursor');
   const tracerCanvas = document.getElementById('tracer-canvas');
   if (!cursorEl || !tracerCanvas) return;
@@ -285,7 +285,7 @@ function initIntroScreen() {
           ctx.beginPath();
           ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
           ctx.lineTo(trail[i].x, trail[i].y);
-          ctx.strokeStyle = `rgba(59, 130, 246, ${alpha})`;
+          ctx.strokeStyle = `rgba(0, 217, 255, ${alpha})`;
           ctx.lineWidth   = width;
           ctx.lineCap     = 'round';
           ctx.lineJoin    = 'round';
@@ -300,7 +300,7 @@ function initIntroScreen() {
     requestAnimationFrame(animate);
   }
   animate();
-})();
+})(); */
 
 
 /* =====================================================
@@ -446,8 +446,8 @@ function initScrollReveal() {
 
     if (pts.length > 1) {
       const grad = ctx.createLinearGradient(0, centres[0].y, 0, centres[centres.length-1].y);
-      grad.addColorStop(0, 'rgba(59,130,246,0.95)');
-      grad.addColorStop(1, 'rgba(59,130,246,0.35)');
+      grad.addColorStop(0, 'rgba(0,217,255,0.95)');
+      grad.addColorStop(1, 'rgba(0,217,255,0.35)');
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
@@ -464,10 +464,10 @@ function initScrollReveal() {
     centres.forEach((c, i) => {
       const active = i <= activeStage;
       ctx.save();
-      if (active) { ctx.shadowColor = 'rgba(59,130,246,0.7)'; ctx.shadowBlur = 10; }
+      if (active) { ctx.shadowColor = 'rgba(0,217,255,0.7)'; ctx.shadowBlur = 10; }
       ctx.beginPath();
       ctx.arc(c.x, c.y, active ? 6 : 4, 0, Math.PI * 2);
-      ctx.fillStyle = active ? 'rgb(59,130,246)' : 'rgba(255,255,255,0.15)';
+      ctx.fillStyle = active ? 'rgb(0,217,255)' : 'rgba(255,255,255,0.15)';
       ctx.fill();
       ctx.restore();
     });
@@ -503,21 +503,33 @@ function initScrollReveal() {
     requestAnimationFrame(animateLine);
   }
 
-  // Scroll-based stage detection — whichever box is closest to viewport center
+  // ---- Scroll-driven stage cycling (no wheel hijack) ----
+  // The wrapper is taller than the section; the section is position:sticky.
+  // As the user scrolls through the wrapper's extra height, we map that
+  // progress to the active stage — completely smooth, no event interception.
+  const wrapper = document.getElementById('flow-scroll-wrapper');
+  const section = document.getElementById('features');
+  const totalStages = boxes.length; // 3
+
   function updateStageFromScroll() {
-    const viewCenter = window.innerHeight * 0.45;
-    let closest = 0;
-    let closestDist = Infinity;
-    boxes.forEach((box, i) => {
-      const rect = box.getBoundingClientRect();
-      const boxCenter = rect.top + rect.height / 2;
-      const dist = Math.abs(boxCenter - viewCenter);
-      if (dist < closestDist) {
-        closestDist = dist;
-        closest = i;
-      }
-    });
-    if (closest !== activeStage) setActiveStage(closest);
+    if (!wrapper || !section) return;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const sectionH    = section.offsetHeight;
+    const extraScroll = wrapper.offsetHeight - sectionH; // scrollable range
+
+    // How far through the extra scroll are we?
+    // wrapperRect.top starts at 0 when wrapper enters viewport top,
+    // goes negative as we scroll. The sticky section pins once top <=0.
+    // Progress 0 → 1 maps to the scroll distance after the section pins.
+    const scrolled = -wrapperRect.top - (sectionH > window.innerHeight ? sectionH - window.innerHeight : 0);
+    const progress = Math.max(0, Math.min(1, scrolled / Math.max(extraScroll - (sectionH > window.innerHeight ? sectionH - window.innerHeight : 0), 1)));
+
+    // Map progress to stage (0, 1, 2)
+    const newStage = Math.min(
+      totalStages - 1,
+      Math.floor(progress * totalStages)
+    );
+    if (newStage !== activeStage) setActiveStage(newStage);
   }
   window.addEventListener('scroll', updateStageFromScroll, { passive: true });
 
@@ -640,6 +652,39 @@ function initScrollReveal() {
   if (el) el.textContent = new Date().getFullYear();
 })();
 
+/* =====================================================
+   8b. FOOTER SVG HOVER EFFECT
+   ===================================================== */
+(function initFooterHoverEffect() {
+  const svg = document.getElementById('footer-hover-svg');
+  if (!svg) return;
+
+  const revealMask = document.getElementById('footerRevealMask');
+  const ghostText = svg.querySelector('.hover-footer__svg-text--ghost');
+
+  svg.addEventListener('mouseenter', function () {
+    if (ghostText) ghostText.style.opacity = '0.7';
+  });
+
+  svg.addEventListener('mouseleave', function () {
+    if (ghostText) ghostText.style.opacity = '0';
+    // Reset gradient to center
+    if (revealMask) {
+      revealMask.setAttribute('cx', '50%');
+      revealMask.setAttribute('cy', '50%');
+    }
+  });
+
+  svg.addEventListener('mousemove', function (e) {
+    if (!revealMask) return;
+    const rect = svg.getBoundingClientRect();
+    const cx = ((e.clientX - rect.left) / rect.width) * 100;
+    const cy = ((e.clientY - rect.top) / rect.height) * 100;
+    revealMask.setAttribute('cx', cx + '%');
+    revealMask.setAttribute('cy', cy + '%');
+  });
+})();
+
 
 /* =====================================================
    9. SMOOTH ANCHOR SCROLL
@@ -739,16 +784,16 @@ function initStatsBannerComet() {
       const size  = (1 - i / TAIL_N) * 2.2 + 0.4;
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(147, 197, 253, ${alpha})`;
+      ctx.fillStyle = `rgba(153, 240, 255, ${alpha})`;
       ctx.fill();
     }
 
     // Draw comet head glow
     const head = pointOnPath(t, w, h, RADIUS);
     const grd  = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 9);
-    grd.addColorStop(0,   'rgba(219, 234, 254, 0.95)');
-    grd.addColorStop(0.3, 'rgba(96,  165, 250, 0.55)');
-    grd.addColorStop(1,   'rgba(59,  130, 246, 0)');
+    grd.addColorStop(0,   'rgba(207, 250, 254, 0.95)');
+    grd.addColorStop(0.3, 'rgba(51,  225, 255, 0.55)');
+    grd.addColorStop(1,   'rgba(0,  217, 255, 0)');
     ctx.beginPath();
     ctx.arc(head.x, head.y, 9, 0, Math.PI * 2);
     ctx.fillStyle = grd;
@@ -757,7 +802,7 @@ function initStatsBannerComet() {
     // Bright core dot
     ctx.beginPath();
     ctx.arc(head.x, head.y, 1.8, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(239, 246, 255, 1)';
+    ctx.fillStyle = 'rgba(236, 254, 255, 1)';
     ctx.fill();
 
     requestAnimationFrame(draw);
@@ -1003,4 +1048,9 @@ function initFloatingStats() {
 /* =====================================================
    INIT — start with intro screen
    ===================================================== */
-initIntroScreen();
+// initIntroScreen();  // Gmail intro temporarily disabled
+
+// Go straight to the main site
+initScrollReveal();
+// initFloatingStats();  // floating stats disabled
+initStatsBannerComet();
