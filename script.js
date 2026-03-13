@@ -256,7 +256,7 @@ function initIntroScreen() {
   }, { passive: true });
 
   function attachHoverListeners() {
-    const sel = 'a, button, .component-box, .faq-question, .pricing-card, .cta-button, .btn, .flow-stage-dot, .gmail-email-row';
+    const sel = 'a, button, .faq-question, .pricing-card, .cta-button, .btn, .gmail-email-row';
     document.querySelectorAll(sel).forEach((el) => {
       el.addEventListener('mouseenter', () => cursorEl.classList.add('is-hovering'));
       el.addEventListener('mouseleave', () => cursorEl.classList.remove('is-hovering'));
@@ -368,189 +368,76 @@ function initScrollReveal() {
 /* =====================================================
    6. FLOW VISUAL — Canvas Line + Active Stage
    ===================================================== */
-(function initFlowVisual() {
-  const animContainer = document.getElementById('flow-animation');
-  const canvas        = document.getElementById('flow-canvas');
-  const detailList    = document.getElementById('flow-detail-list');
-  if (!animContainer || !canvas || !detailList) return;
+/* =====================================================
+   6b. STACKING CARDS — scroll-driven card stacking
+   ===================================================== */
+(function initStackingCards() {
+  const section   = document.querySelector('.stacking-cards');
+  const container = document.getElementById('stacking-cards-container');
+  if (!section || !container) return;
 
-  const boxes = Array.from(animContainer.querySelectorAll('.component-box'));
-  const cards = Array.from(detailList.querySelectorAll('.flow-detail-card'));
-  const dots  = Array.from(document.querySelectorAll('.flow-stage-dot'));
-  if (!boxes.length || !cards.length) return;
+  const cards = Array.from(container.querySelectorAll('.stacking-card'));
+  if (!cards.length) return;
 
-  const ctx = canvas.getContext('2d');
-  const carousel = document.getElementById('flow-carousel');
-  let activeStage = 0;
-  let lineProgress = 0;
-  let targetLineProgress = 0;
-  let lineAnimating = false;
+  // Skip scroll animation on small screens (cards are normal-flow there)
+  if (window.innerWidth < 768) return;
 
-  function syncCanvas() {
-    canvas.width  = animContainer.offsetWidth;
-    canvas.height = animContainer.offsetHeight;
-    canvas.style.width  = animContainer.offsetWidth  + 'px';
-    canvas.style.height = animContainer.offsetHeight + 'px';
-    drawLine(lineProgress);
-  }
+  // Scroll distance allocated per card transition (cards 2 & 3 each get this much)
+  var PX_PER_CARD = 600;
 
-  function getBoxCentres() {
-    const cr = animContainer.getBoundingClientRect();
-    return boxes.map((box) => {
-      const r = box.getBoundingClientRect();
-      return { x: animContainer.offsetWidth / 2, y: r.top - cr.top + r.height / 2 };
-    });
-  }
+  // Easing — smooth ease-out so cards decelerate as they land
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
 
-  function drawLine(progress) {
-    const centres = getBoxCentres();
-    if (centres.length < 2) return;
+  function update() {
+    var sectionRect = section.getBoundingClientRect();
+    // How far we've scrolled past the point where the sticky wrapper locks
+    var scrolled = Math.max(0, -sectionRect.top);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
 
-    // Dim dotted track
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(centres[0].x, centres[0].y);
-    centres.slice(1).forEach((c) => ctx.lineTo(c.x, c.y));
-    ctx.setLineDash([4, 8]);
-    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
-    ctx.lineWidth   = 2;
-    ctx.stroke();
-    ctx.restore();
+      /* --- Slide-in progress ---
+         Card 0 is always in position.
+         Card 1 slides in during scroll [0, PX_PER_CARD].
+         Card 2 slides in during scroll [PX_PER_CARD, 2*PX_PER_CARD]. */
+      var slideRaw;
+      if (i === 0) {
+        slideRaw = 1;
+      } else {
+        var start = (i - 1) * PX_PER_CARD;
+        slideRaw = Math.max(0, Math.min(1, (scrolled - start) / PX_PER_CARD));
+      }
+      var slideProgress = easeOutCubic(slideRaw);
 
-    // Build segments
-    const segs = [];
-    let totalLen = 0;
-    for (let i = 1; i < centres.length; i++) {
-      const dx = centres[i].x - centres[i-1].x;
-      const dy = centres[i].y - centres[i-1].y;
-      const len = Math.sqrt(dx*dx + dy*dy);
-      segs.push({ from: centres[i-1], to: centres[i], len });
-      totalLen += len;
-    }
+      /* --- Cover progress (being covered by the next card) --- */
+      var coverProgress = 0;
+      if (i < cards.length - 1) {
+        var coverStart = i * PX_PER_CARD;
+        var coverRaw   = Math.max(0, Math.min(1, (scrolled - coverStart) / PX_PER_CARD));
+        coverProgress  = easeOutCubic(coverRaw);
+      }
 
-    // Draw active (blue) portion
-    const drawLen = progress * totalLen;
-    let rem = drawLen;
-    const pts = [centres[0]];
-    for (const seg of segs) {
-      if (rem <= 0) break;
-      if (rem >= seg.len) { pts.push(seg.to); rem -= seg.len; }
-      else {
-        const t = rem / seg.len;
-        pts.push({ x: seg.from.x + (seg.to.x - seg.from.x) * t, y: seg.from.y + (seg.to.y - seg.from.y) * t });
-        break;
+      /* --- Apply transforms --- */
+      var translateY  = (1 - slideProgress) * 110;   // 110% → 0%
+      var scale       = 1 - coverProgress * 0.08;     // 1 → 0.92
+      var brightness  = 100 - coverProgress * 50;      // 100% → 50%
+
+      card.style.transform = 'translateY(' + translateY + '%) scale(' + scale + ')';
+      card.style.filter    = 'brightness(' + brightness + '%)';
+
+      /* --- Dynamic z-index: card 2 starts above card 3 so it reveals 3 behind it.
+             Once card 3 begins sliding, it rises above card 2. --- */
+      if (i > 0) {
+        // Before sliding: earlier cards sit on top (reverse order).
+        // Once sliding: natural order so later cards rise above earlier ones.
+        card.style.zIndex = slideRaw > 0 ? (2 + i) : (2 + cards.length - 1 - i);
       }
     }
-
-    if (pts.length > 1) {
-      const grad = ctx.createLinearGradient(0, centres[0].y, 0, centres[centres.length-1].y);
-      grad.addColorStop(0, 'rgba(0,217,255,0.95)');
-      grad.addColorStop(1, 'rgba(0,217,255,0.35)');
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      pts.slice(1).forEach((p) => ctx.lineTo(p.x, p.y));
-      ctx.strokeStyle = grad;
-      ctx.lineWidth   = 2.5;
-      ctx.lineCap     = 'round';
-      ctx.setLineDash([]);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // Node dots
-    centres.forEach((c, i) => {
-      const active = i <= activeStage;
-      ctx.save();
-      if (active) { ctx.shadowColor = 'rgba(0,217,255,0.7)'; ctx.shadowBlur = 10; }
-      ctx.beginPath();
-      ctx.arc(c.x, c.y, active ? 6 : 4, 0, Math.PI * 2);
-      ctx.fillStyle = active ? 'rgb(0,217,255)' : 'rgba(255,255,255,0.15)';
-      ctx.fill();
-      ctx.restore();
-    });
   }
 
-  function setActiveStage(stage) {
-    if (stage === activeStage) return;
-    activeStage = stage;
-    boxes.forEach((b, i) => b.classList.toggle('is-active', i === stage));
-    dots.forEach((d, i)  => d.classList.toggle('is-active', i === stage));
-
-    // Revolve the 3D carousel
-    if (carousel) {
-      carousel.style.transform = 'rotateY(' + (-120 * stage) + 'deg)';
-    }
-
-    // Animate the line progress (slow fuse)
-    targetLineProgress = stage / Math.max(boxes.length - 1, 1);
-    if (!lineAnimating) animateLine();
-  }
-
-  function animateLine() {
-    lineAnimating = true;
-    const diff = targetLineProgress - lineProgress;
-    if (Math.abs(diff) < 0.002) {
-      lineProgress = targetLineProgress;
-      drawLine(lineProgress);
-      lineAnimating = false;
-      return;
-    }
-    lineProgress += diff * 0.035; // slow lerp — "slow fuse"
-    drawLine(lineProgress);
-    requestAnimationFrame(animateLine);
-  }
-
-  // ---- Scroll-driven stage cycling (no wheel hijack) ----
-  // The wrapper is taller than the section; the section is position:sticky.
-  // As the user scrolls through the wrapper's extra height, we map that
-  // progress to the active stage — completely smooth, no event interception.
-  const wrapper = document.getElementById('flow-scroll-wrapper');
-  const section = document.getElementById('features');
-  const totalStages = boxes.length; // 3
-
-  function updateStageFromScroll() {
-    if (!wrapper || !section) return;
-    const wrapperRect = wrapper.getBoundingClientRect();
-    const sectionH    = section.offsetHeight;
-    const extraScroll = wrapper.offsetHeight - sectionH; // scrollable range
-
-    // How far through the extra scroll are we?
-    // wrapperRect.top starts at 0 when wrapper enters viewport top,
-    // goes negative as we scroll. The sticky section pins once top <=0.
-    // Progress 0 → 1 maps to the scroll distance after the section pins.
-    const scrolled = -wrapperRect.top - (sectionH > window.innerHeight ? sectionH - window.innerHeight : 0);
-    const progress = Math.max(0, Math.min(1, scrolled / Math.max(extraScroll - (sectionH > window.innerHeight ? sectionH - window.innerHeight : 0), 1)));
-
-    // Map progress to stage (0, 1, 2)
-    const newStage = Math.min(
-      totalStages - 1,
-      Math.floor(progress * totalStages)
-    );
-    if (newStage !== activeStage) setActiveStage(newStage);
-  }
-  window.addEventListener('scroll', updateStageFromScroll, { passive: true });
-
-  // Dot + box click
-  dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => {
-      setActiveStage(i);
-      boxes[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-  });
-  boxes.forEach((box, i) => box.addEventListener('click', () => setActiveStage(i)));
-
-  // Resize
-  const resizeObs = new ResizeObserver(syncCanvas);
-  resizeObs.observe(animContainer);
-  window.addEventListener('resize', syncCanvas, { passive: true });
-  window.addEventListener('scroll', () => drawLine(lineProgress), { passive: true });
-
-  // Initialize carousel at stage 0
-  if (carousel) carousel.style.transform = 'rotateY(0deg)';
-  requestAnimationFrame(() => { syncCanvas(); activeStage = -1; setActiveStage(0); });
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
 })();
 
 
@@ -561,7 +448,7 @@ function initScrollReveal() {
   const faqs = [
     {
       q: 'What ROI do you typically generate for brands at our level?',
-      a: 'Most brands see a meaningful lift within the first 30–60 days. Typical outcomes range from +15% to +40% increase in email/SMS attributed revenue, depending on current setup quality, traffic volume, and inventory depth. We average 11.2X ROI across our client portfolio.',
+      a: 'Most brands see a meaningful lift within the first 30–60 days. Typical outcomes range from +15% to +40% increase in email/SMS attributed revenue, depending on current setup quality, traffic volume, and inventory depth. We average 9.4X ROI across our client portfolio.',
     },
     {
       q: 'How quickly can we go live?',
@@ -1043,6 +930,172 @@ function initFloatingStats() {
 
   tick();
 }
+
+
+/* =====================================================
+   12. HERO TEXT CYCLING
+   ===================================================== */
+(function initHeroCycle() {
+  const texts = document.querySelectorAll('.hero__cycle-text');
+  if (texts.length < 2) return;
+
+  let current = 0;
+  const DISPLAY_MS = 2500;
+
+  setInterval(() => {
+    const prev = current;
+    current = (current + 1) % texts.length;
+
+    // Exit old text (slide up and out)
+    texts[prev].classList.remove('is-active');
+    texts[prev].classList.add('is-exiting');
+
+    // Wait for exit to finish, then enter new text
+    setTimeout(() => {
+      texts[current].classList.remove('is-exiting');
+      texts[current].classList.add('is-active');
+    }, 500);
+  }, DISPLAY_MS);
+})();
+
+
+/* =====================================================
+   13. HERO 3D DASHBOARD — counters, donut, mouse follow
+   ===================================================== */
+(function initHeroDashboard() {
+  const dashboard = document.getElementById('hero-dashboard');
+  const wrapper   = document.getElementById('hero-dashboard-wrapper');
+  if (!dashboard || !wrapper) return;
+
+  /* -- Animated counters -- */
+  function heroDashCounter(el, target, prefix, suffix, decimals) {
+    if (!el) return;
+    const duration = 2000;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = target * eased;
+      el.textContent = prefix + current.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  // Start counters after a short delay
+  setTimeout(function () {
+    heroDashCounter(document.getElementById('hero-kpi-revenue'), 247.8, '$', 'k', 1);
+    heroDashCounter(document.getElementById('hero-kpi-open'), 52.4, '', '%', 1);
+    heroDashCounter(document.getElementById('hero-kpi-click'), 6.8, '', '%', 1);
+    heroDashCounter(document.getElementById('hero-kpi-subs'), 28420, '', '', 0);
+  }, 300);
+
+  /* -- Donut chart -- */
+  (function () {
+    var data = [
+      { label: 'Welcome',       value: 42, color: '#00e5ff' },
+      { label: 'Cart Recovery',  value: 38, color: '#b388ff' },
+      { label: 'Win-Back',       value: 24, color: '#00e676' },
+      { label: 'Post-Purchase',  value: 18, color: '#ffab00' },
+      { label: 'Browse Abandon', value: 12, color: '#ff4081' },
+    ];
+    var total = data.reduce(function (s, d) { return s + d.value; }, 0);
+    var svg    = document.getElementById('hero-donut-svg');
+    var legend = document.getElementById('hero-donut-legend');
+    if (!svg || !legend) return;
+
+    var cx = 60, cy = 60, r = 44;
+    var circumference = 2 * Math.PI * r;
+    var offset = 0;
+
+    data.forEach(function (d, i) {
+      var pct     = d.value / total;
+      var dashLen = circumference * pct;
+      var gap     = circumference - dashLen + 2;
+
+      var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', r);
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', d.color);
+      circle.setAttribute('stroke-width', '8');
+      circle.setAttribute('stroke-linecap', 'round');
+      circle.setAttribute('stroke-dasharray', (dashLen - 3) + ' ' + (gap + 3));
+      circle.setAttribute('stroke-dashoffset', '' + (-offset));
+      circle.style.opacity = '0';
+      circle.style.animation = 'hero-dash-donut-draw 0.8s ease-out ' + (0.8 + i * 0.15) + 's forwards';
+      circle.style.setProperty('--circumference', circumference + 'px');
+      svg.appendChild(circle);
+      offset += dashLen;
+
+      var item = document.createElement('div');
+      item.className = 'hero-dash-donut-legend-item';
+      item.innerHTML = '<div class="hero-dash-donut-legend-dot" style="background:' + d.color + '"></div>' +
+                       d.label +
+                       '<span class="hero-dash-donut-legend-value">$' + d.value + 'k</span>';
+      legend.appendChild(item);
+    });
+
+    setTimeout(function () {
+      heroDashCounter(document.getElementById('hero-donut-total'), total, '$', 'k', 0);
+    }, 800);
+  })();
+
+  /* -- Mouse-follow tilt (only when hovering) -- */
+  var isHovering = false;
+  var baseRotY = -6;
+  var baseRotX = 3;
+  var currentRotY = baseRotY;
+  var currentRotX = baseRotX;
+  var targetRotY = baseRotY;
+  var targetRotX = baseRotX;
+  var rafId = null;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function animateTilt() {
+    currentRotY = lerp(currentRotY, targetRotY, 0.08);
+    currentRotX = lerp(currentRotX, targetRotX, 0.08);
+    dashboard.style.transform =
+      'rotateY(' + currentRotY.toFixed(2) + 'deg) rotateX(' + currentRotX.toFixed(2) + 'deg)';
+
+    if (Math.abs(currentRotY - targetRotY) > 0.01 || Math.abs(currentRotX - targetRotX) > 0.01) {
+      rafId = requestAnimationFrame(animateTilt);
+    } else {
+      rafId = null;
+    }
+  }
+
+  function startRaf() {
+    if (!rafId) rafId = requestAnimationFrame(animateTilt);
+  }
+
+  wrapper.addEventListener('mouseenter', function () {
+    isHovering = true;
+    dashboard.classList.add('is-hovering');
+  });
+
+  wrapper.addEventListener('mouseleave', function () {
+    isHovering = false;
+    dashboard.classList.remove('is-hovering');
+    targetRotY = baseRotY;
+    targetRotX = baseRotX;
+    startRaf();
+  });
+
+  wrapper.addEventListener('mousemove', function (e) {
+    if (!isHovering) return;
+    var rect = wrapper.getBoundingClientRect();
+    var x = (e.clientX - rect.left) / rect.width;   // 0..1
+    var y = (e.clientY - rect.top)  / rect.height;   // 0..1
+    // Map to small tilt range around the base tilt
+    targetRotY = baseRotY + (x - 0.5) * 10;  // +/-5 deg
+    targetRotX = baseRotX + (0.5 - y) * 8;   // +/-4 deg
+    startRaf();
+  });
+})();
 
 
 /* =====================================================

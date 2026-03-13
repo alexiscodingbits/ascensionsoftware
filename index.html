@@ -9,7 +9,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Calendly widget CSS -->
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
@@ -248,9 +248,16 @@
 
         <!-- Headline -->
         <h1 class="hero__title">
-          Scale Your Email Marketing
+          Email Marketing That...
           <br>
-          <span class="hero__accent">To New Heights</span>
+          <span class="hero__cycle-wrapper" aria-live="polite">
+            <span class="hero__accent hero__cycle-text is-active">Moves The Needle</span>
+            <span class="hero__accent hero__cycle-text">Pays For Itself</span>
+            <span class="hero__accent hero__cycle-text">Prints Revenue</span>
+            <span class="hero__accent hero__cycle-text">Runs On Autopilot</span>
+            <span class="hero__accent hero__cycle-text">Your Competitors Wish They Had</span>
+            <span class="hero__accent hero__cycle-text">Your List Has Been Waiting For</span>
+          </span>
         </h1>
 
         <!-- Subtext -->
@@ -262,7 +269,7 @@
         <!-- Stat chips -->
         <div class="hero__chips">
           <div class="hero__chip">20+ Brands Served</div>
-          <div class="hero__chip">11.2x Avg. ROI</div>
+          <div class="hero__chip">9.4x Avg. ROI</div>
           <div class="hero__chip">30% Avg. Revenue Lift</div>
         </div>
 
@@ -273,6 +280,245 @@
         </div>
 
       </div>
+
+      <!-- Hero 3D Dashboard -->
+      <div class="hero-dashboard-wrapper" id="hero-dashboard-wrapper">
+        <div class="hero-dashboard-glow" aria-hidden="true"></div>
+        <div class="hero-dashboard-perspective">
+          <div class="hero-dashboard" id="hero-dashboard">
+            <div class="hero-dash-scanline"></div>
+
+            <!-- Header -->
+            <div class="hero-dash-header">
+              <div class="hero-dash-header-left">
+                <div class="hero-dash-logo">A</div>
+                <div>
+                  <div class="hero-dash-title">Retention Engine</div>
+                  <div class="hero-dash-subtitle">ascension.software</div>
+                </div>
+              </div>
+              <div class="hero-dash-header-right">
+                <div class="hero-dash-time-range">Mar 1 – Mar 30, 2026</div>
+                <div class="hero-dash-live-badge">
+                  <div class="hero-dash-live-dot"></div>
+                  Live
+                </div>
+              </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="hero-dash-kpi-row">
+              <div class="hero-dash-kpi-card">
+                <div class="hero-dash-kpi-label">Email Revenue</div>
+                <div class="hero-dash-kpi-value" id="hero-kpi-revenue">$0</div>
+                <div class="hero-dash-kpi-change up">↑ 24.3%</div>
+                <svg class="hero-dash-kpi-spark" width="48" height="20" viewBox="0 0 48 20"><polyline fill="none" stroke="var(--hd-cyan)" stroke-width="1.5" points="0,16 8,12 16,14 24,8 32,6 40,9 48,2" opacity="0.5"/></svg>
+              </div>
+              <div class="hero-dash-kpi-card">
+                <div class="hero-dash-kpi-label">Open Rate</div>
+                <div class="hero-dash-kpi-value" id="hero-kpi-open">0%</div>
+                <div class="hero-dash-kpi-change up">↑ 8.1%</div>
+                <svg class="hero-dash-kpi-spark" width="48" height="20" viewBox="0 0 48 20"><polyline fill="none" stroke="var(--hd-green)" stroke-width="1.5" points="0,14 8,13 16,10 24,11 32,7 40,5 48,4" opacity="0.5"/></svg>
+              </div>
+              <div class="hero-dash-kpi-card">
+                <div class="hero-dash-kpi-label">Click Rate</div>
+                <div class="hero-dash-kpi-value" id="hero-kpi-click">0%</div>
+                <div class="hero-dash-kpi-change up">↑ 5.4%</div>
+                <svg class="hero-dash-kpi-spark" width="48" height="20" viewBox="0 0 48 20"><polyline fill="none" stroke="var(--hd-purple)" stroke-width="1.5" points="0,15 8,14 16,12 24,13 32,9 40,7 48,5" opacity="0.5"/></svg>
+              </div>
+              <div class="hero-dash-kpi-card">
+                <div class="hero-dash-kpi-label">List Growth</div>
+                <div class="hero-dash-kpi-value" id="hero-kpi-subs">0</div>
+                <div class="hero-dash-kpi-change up">↑ 1,240 this mo.</div>
+                <svg class="hero-dash-kpi-spark" width="48" height="20" viewBox="0 0 48 20"><polyline fill="none" stroke="var(--hd-amber)" stroke-width="1.5" points="0,18 8,16 16,15 24,12 32,10 40,7 48,3" opacity="0.5"/></svg>
+              </div>
+            </div>
+
+            <!-- Middle Row: Chart + Donut -->
+            <div class="hero-dash-middle-row">
+              <div class="hero-dash-chart-section">
+                <div class="hero-dash-chart-header">
+                  <div class="hero-dash-chart-title">Revenue vs. Last Period</div>
+                  <div class="hero-dash-chart-tabs">
+                    <div class="hero-dash-chart-tab">7D</div>
+                    <div class="hero-dash-chart-tab active">30D</div>
+                    <div class="hero-dash-chart-tab">90D</div>
+                  </div>
+                </div>
+                <div class="hero-dash-chart-area">
+                  <svg viewBox="0 0 500 100" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="heroChartGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="rgba(0, 229, 255, 0.12)" />
+                        <stop offset="100%" stop-color="rgba(0, 229, 255, 0)" />
+                      </linearGradient>
+                    </defs>
+                    <line x1="0" y1="25" x2="500" y2="25" class="hero-dash-grid-line"/>
+                    <line x1="0" y1="50" x2="500" y2="50" class="hero-dash-grid-line"/>
+                    <line x1="0" y1="75" x2="500" y2="75" class="hero-dash-grid-line"/>
+                    <path class="hero-dash-line-secondary" d="M0,70 L42,65 L84,68 L126,60 L168,55 L210,58 L252,50 L294,48 L336,52 L378,45 L420,40 L462,42 L500,38"/>
+                    <path class="hero-dash-chart-fill" d="M0,82 L42,70 L84,74 L126,58 L168,50 L210,54 L252,38 L294,32 L336,36 L378,22 L420,14 L462,18 L500,8 L500,100 L0,100 Z"/>
+                    <path class="hero-dash-chart-line" d="M0,82 L42,70 L84,74 L126,58 L168,50 L210,54 L252,38 L294,32 L336,36 L378,22 L420,14 L462,18 L500,8"/>
+                    <circle class="hero-dash-chart-dot" cx="420" cy="14" r="2.5" style="animation-delay: 2.2s"/>
+                    <circle class="hero-dash-chart-dot" cx="500" cy="8" r="3" style="animation-delay: 2.5s">
+                      <animate attributeName="r" values="3;4.5;3" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                  </svg>
+                </div>
+                <div class="hero-dash-chart-labels">
+                  <span class="hero-dash-chart-label">Mar 1</span>
+                  <span class="hero-dash-chart-label">Mar 8</span>
+                  <span class="hero-dash-chart-label">Mar 15</span>
+                  <span class="hero-dash-chart-label">Mar 22</span>
+                  <span class="hero-dash-chart-label">Mar 30</span>
+                </div>
+                <div class="hero-dash-chart-legend">
+                  <div class="hero-dash-legend-item"><div class="hero-dash-legend-dot" style="background:var(--hd-cyan)"></div>This period</div>
+                  <div class="hero-dash-legend-item"><div class="hero-dash-legend-dot" style="background:var(--hd-purple); opacity:0.5"></div>Previous period</div>
+                </div>
+              </div>
+
+              <!-- Donut Chart -->
+              <div class="hero-dash-donut-section">
+                <div class="hero-dash-donut-title">Revenue by Flow</div>
+                <div class="hero-dash-donut-wrapper">
+                  <div class="hero-dash-donut-chart">
+                    <svg viewBox="0 0 120 120" id="hero-donut-svg"></svg>
+                    <div class="hero-dash-donut-center">
+                      <div class="hero-dash-donut-center-value" id="hero-donut-total">$0</div>
+                      <div class="hero-dash-donut-center-label">Total</div>
+                    </div>
+                  </div>
+                  <div class="hero-dash-donut-legend" id="hero-donut-legend"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="hero-dash-bottom-row">
+              <div class="hero-dash-panel">
+                <div class="hero-dash-panel-header">
+                  <div class="hero-dash-panel-title">Top Flows</div>
+                  <div class="hero-dash-flow-status active">3 Active</div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                  <div style="font-size:9px; color:rgba(200,215,240,0.35); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.06em;">Welcome Series</div>
+                  <div class="hero-dash-flow-nodes">
+                    <div class="hero-dash-flow-node trigger">⚡</div>
+                    <div class="hero-dash-flow-connector"></div>
+                    <div class="hero-dash-flow-node email">✉</div>
+                    <div class="hero-dash-flow-connector"></div>
+                    <div class="hero-dash-flow-node wait">⏳</div>
+                    <div class="hero-dash-flow-connector"></div>
+                    <div class="hero-dash-flow-node email">✉</div>
+                    <div class="hero-dash-flow-connector"></div>
+                    <div class="hero-dash-flow-node check">✓</div>
+                  </div>
+                  <div class="hero-dash-flow-stats">
+                    <div class="hero-dash-flow-stat-item"><div class="hero-dash-flow-stat-label">Sent</div><div class="hero-dash-flow-stat-value">4.2k</div></div>
+                    <div class="hero-dash-flow-stat-item"><div class="hero-dash-flow-stat-label">Conv.</div><div class="hero-dash-flow-stat-value" style="color:var(--hd-green)">18.4%</div></div>
+                    <div class="hero-dash-flow-stat-item"><div class="hero-dash-flow-stat-label">Rev.</div><div class="hero-dash-flow-stat-value" style="color:var(--hd-cyan)">$42k</div></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:9px; color:rgba(200,215,240,0.35); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.06em;">Abandoned Cart</div>
+                  <div class="hero-dash-flow-nodes">
+                    <div class="hero-dash-flow-node trigger">🛒</div>
+                    <div class="hero-dash-flow-connector"></div>
+                    <div class="hero-dash-flow-node wait">⏳</div>
+                    <div class="hero-dash-flow-connector"></div>
+                    <div class="hero-dash-flow-node email">✉</div>
+                    <div class="hero-dash-flow-connector"></div>
+                    <div class="hero-dash-flow-node check">✓</div>
+                  </div>
+                  <div class="hero-dash-flow-stats">
+                    <div class="hero-dash-flow-stat-item"><div class="hero-dash-flow-stat-label">Recovered</div><div class="hero-dash-flow-stat-value" style="color:var(--hd-cyan)">$38k</div></div>
+                    <div class="hero-dash-flow-stat-item"><div class="hero-dash-flow-stat-label">Rate</div><div class="hero-dash-flow-stat-value" style="color:var(--hd-green)">12.1%</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Campaigns -->
+              <div class="hero-dash-panel">
+                <div class="hero-dash-panel-header">
+                  <div class="hero-dash-panel-title">Recent Campaigns</div>
+                </div>
+                <div class="hero-dash-campaigns-list">
+                  <div class="hero-dash-campaign-row">
+                    <div class="hero-dash-campaign-name">Spring Sale Launch</div>
+                    <div class="hero-dash-campaign-metric" style="color:var(--hd-green)">64.2%</div>
+                    <div class="hero-dash-campaign-bar-wrapper"><div class="hero-dash-campaign-bar" style="width:64%; background:var(--hd-green); animation-delay:0.6s"></div></div>
+                  </div>
+                  <div class="hero-dash-campaign-row">
+                    <div class="hero-dash-campaign-name">Win-Back Series</div>
+                    <div class="hero-dash-campaign-metric" style="color:var(--hd-cyan)">58.7%</div>
+                    <div class="hero-dash-campaign-bar-wrapper"><div class="hero-dash-campaign-bar" style="width:58%; background:var(--hd-cyan); animation-delay:0.75s"></div></div>
+                  </div>
+                  <div class="hero-dash-campaign-row">
+                    <div class="hero-dash-campaign-name">VIP Early Access</div>
+                    <div class="hero-dash-campaign-metric" style="color:var(--hd-purple)">51.3%</div>
+                    <div class="hero-dash-campaign-bar-wrapper"><div class="hero-dash-campaign-bar" style="width:51%; background:var(--hd-purple); animation-delay:0.9s"></div></div>
+                  </div>
+                  <div class="hero-dash-campaign-row">
+                    <div class="hero-dash-campaign-name">New Arrivals</div>
+                    <div class="hero-dash-campaign-metric" style="color:var(--hd-amber)">47.8%</div>
+                    <div class="hero-dash-campaign-bar-wrapper"><div class="hero-dash-campaign-bar" style="width:48%; background:var(--hd-amber); animation-delay:1.05s"></div></div>
+                  </div>
+                  <div class="hero-dash-campaign-row">
+                    <div class="hero-dash-campaign-name">Newsletter #42</div>
+                    <div class="hero-dash-campaign-metric" style="color:rgba(200,215,240,0.55)">39.1%</div>
+                    <div class="hero-dash-campaign-bar-wrapper"><div class="hero-dash-campaign-bar" style="width:39%; background:rgba(200,215,240,0.55); animation-delay:1.2s"></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- A/B Test -->
+              <div class="hero-dash-panel">
+                <div class="hero-dash-panel-header">
+                  <div class="hero-dash-panel-title">A/B Test Live</div>
+                  <div class="hero-dash-flow-status optimizing">Running</div>
+                </div>
+                <div class="hero-dash-ab-test">
+                  <div class="hero-dash-ab-variant winner">
+                    <div class="hero-dash-ab-variant-header">
+                      <div class="hero-dash-ab-variant-label">Variant A <span class="hero-dash-ab-badge">Leading</span></div>
+                      <div class="hero-dash-ab-rate" style="color:var(--hd-cyan)">4.8%</div>
+                    </div>
+                    <div class="hero-dash-ab-bar-track">
+                      <div class="hero-dash-ab-bar-fill" style="width:72%; background: linear-gradient(90deg, var(--hd-cyan), rgba(0,229,255,0.4));"></div>
+                    </div>
+                    <div class="hero-dash-ab-meta">
+                      <div class="hero-dash-ab-meta-item">Opens <span>62.1%</span></div>
+                      <div class="hero-dash-ab-meta-item">Clicks <span>4.8%</span></div>
+                      <div class="hero-dash-ab-meta-item">Rev <span>$2.4k</span></div>
+                    </div>
+                  </div>
+                  <div class="hero-dash-ab-variant">
+                    <div class="hero-dash-ab-variant-header">
+                      <div class="hero-dash-ab-variant-label">Variant B</div>
+                      <div class="hero-dash-ab-rate" style="color:rgba(200,215,240,0.55)">3.2%</div>
+                    </div>
+                    <div class="hero-dash-ab-bar-track">
+                      <div class="hero-dash-ab-bar-fill" style="width:48%; background: linear-gradient(90deg, var(--hd-purple), rgba(179,136,255,0.4));"></div>
+                    </div>
+                    <div class="hero-dash-ab-meta">
+                      <div class="hero-dash-ab-meta-item">Opens <span>55.4%</span></div>
+                      <div class="hero-dash-ab-meta-item">Clicks <span>3.2%</span></div>
+                      <div class="hero-dash-ab-meta-item">Rev <span>$1.6k</span></div>
+                    </div>
+                  </div>
+                  <div class="hero-dash-ab-confidence">
+                    <div class="hero-dash-ab-confidence-label">Statistical Confidence</div>
+                    <div class="hero-dash-ab-confidence-value">94.2%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- ============================================================
@@ -307,142 +553,98 @@
     <!-- ============================================================
          3-STAGE SYSTEM (scroll-lock wrapper)
          ============================================================ -->
-    <div class="flow-scroll-wrapper" id="flow-scroll-wrapper">
-    <section class="flow-visual" id="features">
-      <!-- Subtle bg grid -->
-      <div class="flow-visual__bg-grid" aria-hidden="true"></div>
-
-      <!-- Section header -->
-      <div class="flow-visual__header reveal">
-        <p class="eyebrow">How It Works</p>
-        <h2 class="section-title">Our 3-Stage Retention System</h2>
-        <p class="section-sub">
-          A complete, done-for-you retention engine — built, managed, and optimised
-          specifically for your brand.
-        </p>
-      </div>
-
-      <!-- Main layout: animation column + detail cards -->
-      <div class="flow-visual__layout">
-
-        <!-- Left: boxes connected by canvas line -->
-        <div class="flow-visual__animation" id="flow-animation">
-          <canvas id="flow-canvas" aria-hidden="true"></canvas>
-
-          <div class="flow-visual__boxes">
-
-            <div class="component-box is-active" id="flow-box-0" data-stage="0" role="button" tabindex="0" aria-label="Stage 1: Build">
-              <div class="component-box__icon">
-                <!-- Automated / pencil icon -->
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-              </div>
-              <div class="component-box__label">Build</div>
-            </div>
-
-            <div class="component-box" id="flow-box-1" data-stage="1" role="button" tabindex="0" aria-label="Stage 2: Analyse">
-              <div class="component-box__icon">
-                <!-- Analytics / bar chart icon -->
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="18" y1="20" x2="18" y2="10"/>
-                  <line x1="12" y1="20" x2="12" y2="4"/>
-                  <line x1="6"  y1="20" x2="6"  y2="14"/>
-                  <rect x="4" y="2" width="16" height="20" rx="0" opacity="0"/>
-                </svg>
-              </div>
-              <div class="component-box__label">Analyse</div>
-            </div>
-
-            <div class="component-box" id="flow-box-2" data-stage="2" role="button" tabindex="0" aria-label="Stage 3: Grow">
-              <div class="component-box__icon">
-                <!-- Growth / trending up icon -->
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-                  <polyline points="16 7 22 7 22 13"/>
-                </svg>
-              </div>
-              <div class="component-box__label">Grow</div>
-            </div>
-
-          </div>
+    <section class="stacking-cards" id="features">
+      <!-- Sticky wrapper — keeps header + cards locked together -->
+      <div class="stacking-cards__sticky">
+        <!-- Section header -->
+        <div class="stacking-cards__header reveal">
+          <p class="eyebrow">How It Works</p>
+          <h2 class="section-title">Our 3-Stage Retention System</h2>
+          <p class="section-sub">
+            A complete, done-for-you retention engine — built, managed, and optimised
+            specifically for your brand.
+          </p>
         </div>
 
-        <!-- Right: detail cards -->
-        <div class="flow-detail-list" id="flow-detail-list">
-          <div class="flow-cards-carousel" id="flow-carousel">
+        <!-- Stacking cards container -->
+        <div class="stacking-cards__container" id="stacking-cards-container">
 
-          <!-- Stage 01 — Automated Campaigns -->
-          <article
-            class="flow-detail-card flow-detail-card--0"
-            data-stage="0"
-            aria-label="Stage 01: Build — Automated Campaigns"
-          >
-            <div class="flow-detail-card__cover" style="background: linear-gradient(135deg, #0F172A 0%, #0A3D4F 50%, #00D9FF 100%);">
-              <div class="flow-detail-card__icon-large" aria-hidden="true">⏰</div>
-            </div>
-            <div class="flow-detail-card__meta">
-              <p class="flow-detail-card__subtitle">Stage 01 · Build</p>
-              <h3 class="flow-detail-card__title">Automated Campaigns</h3>
-              <p class="flow-detail-card__body">
+        <!-- Card 1 — Build -->
+        <div class="stacking-card stacking-card--1" data-index="0">
+          <div class="stacking-card__inner">
+            <div class="stacking-card__text">
+              <p class="stacking-card__subtitle">Stage 01 · Build</p>
+              <h3 class="stacking-card__title">Automated Campaigns</h3>
+              <p class="stacking-card__body">
                 Save time with smart scheduling and personalised email flows. We build your
                 complete retention engine from the ground up — welcome sequences, abandoned
                 cart, post-purchase, win-back, and more — all tailored to your brand and
                 your customers' behaviour.
               </p>
             </div>
-          </article>
-
-          <!-- Stage 02 — Real-Time Analytics -->
-          <article
-            class="flow-detail-card flow-detail-card--1"
-            data-stage="1"
-            aria-label="Stage 02: Analyse — Real-Time Analytics"
-          >
-            <div class="flow-detail-card__cover" style="background: linear-gradient(135deg, #0F172A 0%, #00D9FF 100%);">
-              <div class="flow-detail-card__icon-large" aria-hidden="true">📊</div>
+            <div class="stacking-card__image">
+              <div class="stacking-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </div>
             </div>
-            <div class="flow-detail-card__meta">
-              <p class="flow-detail-card__subtitle">Stage 02 · Analyse</p>
-              <h3 class="flow-detail-card__title">Real-Time Analytics</h3>
-              <p class="flow-detail-card__body">
+          </div>
+        </div>
+
+        <!-- Card 2 — Analyse -->
+        <div class="stacking-card stacking-card--2" data-index="1">
+          <div class="stacking-card__inner">
+            <div class="stacking-card__text">
+              <p class="stacking-card__subtitle">Stage 02 · Analyse</p>
+              <h3 class="stacking-card__title">Real-Time Analytics</h3>
+              <p class="stacking-card__body">
                 Track performance instantly and make data-driven decisions. Our advanced
                 reporting surfaces cohort lift, campaign vs. flow revenue split, revenue
                 per recipient, and deliverability health — so you always know exactly
                 what's working and why.
               </p>
             </div>
-          </article>
-
-          <!-- Stage 03 — Seamless Integrations -->
-          <article
-            class="flow-detail-card flow-detail-card--2"
-            data-stage="2"
-            aria-label="Stage 03: Grow — Seamless Integrations"
-          >
-            <div class="flow-detail-card__cover" style="background: linear-gradient(135deg, #0F172A 0%, #0A3D4F 50%, #33E1FF 100%);">
-              <div class="flow-detail-card__icon-large" aria-hidden="true">🚀</div>
+            <div class="stacking-card__image">
+              <div class="stacking-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6"  y1="20" x2="6"  y2="14"/>
+                </svg>
+              </div>
             </div>
-            <div class="flow-detail-card__meta">
-              <p class="flow-detail-card__subtitle">Stage 03 · Grow</p>
-              <h3 class="flow-detail-card__title">Seamless Integrations</h3>
-              <p class="flow-detail-card__body">
+          </div>
+        </div>
+
+        <!-- Card 3 — Grow -->
+        <div class="stacking-card stacking-card--3" data-index="2">
+          <div class="stacking-card__inner">
+            <div class="stacking-card__text">
+              <p class="stacking-card__subtitle">Stage 03 · Grow</p>
+              <h3 class="stacking-card__title">Seamless Integrations</h3>
+              <p class="stacking-card__body">
                 Connect with Klaviyo, Shopify, and your favourite tools in minutes. We
                 coordinate email, SMS, and popup channels into one unified retention system
                 that compounds customer LTV over time — driving predictable, recurring
                 revenue without additional ad spend.
               </p>
             </div>
-          </article>
-
-          </div><!-- /.flow-cards-carousel -->
-
+            <div class="stacking-card__image">
+              <div class="stacking-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                  <polyline points="16 7 22 7 22 13"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
 
         </div>
-      </div>
+      </div><!-- /.stacking-cards__sticky -->
     </section>
-    </div><!-- /.flow-scroll-wrapper -->
 
     <!-- ============================================================
          PRICING
@@ -542,28 +744,58 @@
     <section class="results" id="results">
       <div class="results__inner">
 
-        <div class="results__copy reveal">
-          <p class="eyebrow">Results</p>
-          <h2 class="section-title">30%+ avg. revenue driven by our systems</h2>
-          <p class="results__body">
-            Ascension builds retention engines that compound LTV — no extra paid spend
-            required. We track contribution by cohort, campaign, and channel to prove lift
-            and keep your monthly revenue predictable and growing.
-          </p>
+        <!-- Testimonials header -->
+        <div class="results__testimonials-header reveal">
+          <p class="eyebrow">Client Success Stories</p>
+          <h2 class="section-title">Hear From Our Partners</h2>
         </div>
 
-        <div class="results__stats">
-          <div class="results__stat reveal" data-delay="1">
-            <div class="results__stat-value">11.2x</div>
-            <div class="results__stat-label">Average client ROI</div>
+        <!-- Testimonial cards -->
+        <div class="results__testimonials">
+          <div class="testimonial-card reveal" data-delay="1">
+            <div class="testimonial-card__pfp"><img src="andre.jpg" alt="Andrea Revizi"></div>
+            <div class="testimonial-card__body">
+              <div class="testimonial-card__name">Andrea Revizi</div>
+              <div class="testimonial-card__role">Founder of Boomerang Bites</div>
+              <div class="testimonial-card__stars">★ ★ ★ ★ ★</div>
+              <blockquote class="testimonial-card__quote">"We Have 11X'd Our Sales"</blockquote>
+            </div>
           </div>
-          <div class="results__stat reveal" data-delay="2">
-            <div class="results__stat-value">30%+</div>
-            <div class="results__stat-label">Avg. retention revenue contribution</div>
+          <div class="testimonial-card reveal" data-delay="2">
+            <div class="testimonial-card__pfp"><img src="chris.webp" alt="Chris Murray"></div>
+            <div class="testimonial-card__body">
+              <div class="testimonial-card__name">Chris Murray</div>
+              <div class="testimonial-card__role">Founder of The Gourmet Animal</div>
+              <div class="testimonial-card__stars">★ ★ ★ ★ ★</div>
+              <blockquote class="testimonial-card__quote">"They genuinely want to see you succeed"</blockquote>
+            </div>
           </div>
-          <div class="results__stat reveal" data-delay="3">
-            <div class="results__stat-value">90 days</div>
-            <div class="results__stat-label">To unlock compounding lift</div>
+        </div>
+
+        <!-- Results copy + stat cards -->
+        <div class="results__bottom">
+          <div class="results__copy reveal">
+            <p class="eyebrow">Results</p>
+            <h2 class="section-title">34.4% avg. revenue driven by our systems</h2>
+            <p class="results__body">
+              ASCENSION builds retention engines that compound LTV—no extra paid spend.
+              We track contribution by cohort, campaign, and SKU to prove lift.
+            </p>
+          </div>
+
+          <div class="results__stats">
+            <div class="results__stat reveal" data-delay="1">
+              <div class="results__stat-value">9.4x</div>
+              <div class="results__stat-label">Average client ROI</div>
+            </div>
+            <div class="results__stat reveal" data-delay="2">
+              <div class="results__stat-value">$2,700,000+</div>
+              <div class="results__stat-label">Generated for our clients</div>
+            </div>
+            <div class="results__stat reveal" data-delay="3">
+              <div class="results__stat-value">90 days</div>
+              <div class="results__stat-label">To unlock compounding lift</div>
+            </div>
           </div>
         </div>
 
@@ -675,7 +907,6 @@
         <!-- Brand -->
         <div class="hover-footer__brand">
           <div class="hover-footer__brand-row">
-            <span class="hover-footer__heart">&hearts;</span>
             <span class="hover-footer__brand-name">AscentionSoftware</span>
           </div>
           <p class="hover-footer__brand-desc">
